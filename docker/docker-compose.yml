@@ -1,0 +1,47 @@
+# ============================================================================
+# Docker Compose Configuration
+# ============================================================================
+#
+# Purpose:
+# This file will orchestrate all project services using Docker Compose.
+#
+# Planned Services:
+#
+# 1. Backend
+#    - FastAPI
+#
+# 2. Frontend
+#    - React + Vite
+#
+# 3. Database
+#    - ChromaDB (Vector Database)
+#
+# 4. Optional Services
+#    - Redis (Caching)
+#    - Neo4j (Knowledge Graph)
+#
+# Future Workflow:
+#
+# docker compose up --build
+#
+# This command will:
+#
+# ✔ Build backend image
+# ✔ Build frontend image
+# ✔ Start all services
+# ✔ Connect containers through a shared network
+#
+# Example (to be added later):
+#
+# services:
+#   backend:
+#     build:
+#       context: ..
+#       dockerfile: docker/Dockerfile.backend
+#
+#   frontend:
+#     build:
+#       context: ..
+#       dockerfile: docker/Dockerfile.frontend
+#
+# ============================================================================

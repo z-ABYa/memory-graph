@@ -1,0 +1,32 @@
+# ============================================================================
+# Dockerfile - Frontend
+# ============================================================================
+#
+# Purpose:
+# Containerize the React frontend application.
+#
+# Planned Responsibilities:
+# - Install Node.js dependencies
+# - Build React application
+# - Serve production build
+#
+# Current Status:
+# Docker support will be integrated after frontend development is completed.
+#
+# Future Steps:
+#
+# 1. Use Node.js image
+#
+# 2. Set working directory
+#
+# 3. Copy package.json
+#
+# 4. Install npm dependencies
+#
+# 5. Copy frontend source
+#
+# 6. Build React application
+#
+# 7. Serve build using Nginx or Vite Preview
+#
+# ============================================================================
