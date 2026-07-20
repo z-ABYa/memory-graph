@@ -15,13 +15,19 @@ evaluator = Evaluator()
 
 
 class EvaluationRequest(BaseModel):
-    user_id: str
+    user_id: str = "guest"
     question: str
+
+
+@router.get("/")
+def get_metrics():
+    """Returns the historical average metrics for RAG performance."""
+    return evaluator.get_average_metrics()
 
 
 @router.post("/")
 def evaluate(req: EvaluationRequest):
-
+    """Triggers an on-demand generation and evaluations of relevance, faithfulness, correctness."""
     context = retriever.retrieve(
         req.user_id,
         req.question,
