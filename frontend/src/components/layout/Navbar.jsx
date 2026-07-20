@@ -1,14 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import {
-    Sun,
-    Moon,
-    Settings,
-    Trash2,
-    X,
-    Sparkles,
-    Info,
-    Cpu,
-} from "lucide-react";
+import { Sun, Moon, Settings, Trash2, X, Sparkles, Info, Cpu } from "lucide-react";
 
 function Navbar({ darkMode, toggleTheme, clearConversation }) {
     const [menuOpen, setMenuOpen] = useState(false);
@@ -27,77 +18,76 @@ function Navbar({ darkMode, toggleTheme, clearConversation }) {
     return (
         <header
             style={{
-                height: "60px",
+                height: "56px",
                 background: "var(--sidebar)",
                 borderBottom: "1px solid var(--border)",
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "space-between",
                 paddingLeft: "20px",
-                paddingRight: "20px",
+                paddingRight: "16px",
                 flexShrink: 0,
+                gap: "12px",
             }}
         >
-            {/* Left — Status strip */}
-            <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
-                {/* Gemini model badge */}
+            {/* Left — status badges */}
+            <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
                 <div
                     style={{
                         display: "flex",
                         alignItems: "center",
-                        gap: "7px",
-                        padding: "5px 12px",
+                        gap: "6px",
+                        padding: "4px 11px",
                         borderRadius: "8px",
                         background: "var(--card-2)",
                         border: "1px solid var(--border)",
-                        fontSize: "12px",
+                        fontSize: "11.5px",
                         color: "var(--text-2)",
                         fontWeight: 500,
                     }}
                 >
-                    <Cpu size={13} style={{ color: "var(--primary)" }} />
+                    <Cpu size={12} style={{ color: "var(--primary)" }} />
                     Gemini 2.5 Flash
                 </div>
 
-                {/* RAG badge */}
                 <div
                     style={{
                         display: "flex",
                         alignItems: "center",
-                        gap: "7px",
-                        padding: "5px 12px",
+                        gap: "6px",
+                        padding: "4px 11px",
                         borderRadius: "8px",
                         background: "var(--card-2)",
                         border: "1px solid var(--border)",
-                        fontSize: "12px",
+                        fontSize: "11.5px",
                         color: "var(--text-2)",
                         fontWeight: 500,
                     }}
                 >
-                    <Sparkles size={13} style={{ color: "#818cf8" }} />
+                    <Sparkles size={12} style={{ color: "#818cf8" }} />
                     Hybrid RAG · LangGraph
                 </div>
             </div>
 
-            {/* Right — Actions */}
-            <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+            {/* Right — action buttons */}
+            <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
                 {/* Theme toggle */}
                 <button
                     onClick={toggleTheme}
                     className="btn-icon"
-                    title={darkMode ? "Switch to Light Mode" : "Switch to Dark Mode"}
+                    title={darkMode ? "Switch to Light" : "Switch to Dark"}
                 >
-                    {darkMode ? <Sun size={15} /> : <Moon size={15} />}
+                    {darkMode ? <Sun size={14} /> : <Moon size={14} />}
                 </button>
 
-                {/* Settings menu */}
+                {/* Settings / more */}
                 <div ref={menuRef} style={{ position: "relative" }}>
                     <button
                         onClick={() => setMenuOpen(o => !o)}
                         className="btn-icon"
                         title="Options"
                     >
-                        {menuOpen ? <X size={15} /> : <Settings size={15} />}
+                        {menuOpen ? <X size={14} /> : <Settings size={14} />}
                     </button>
 
                     {menuOpen && (
@@ -106,15 +96,17 @@ function Navbar({ darkMode, toggleTheme, clearConversation }) {
                                 position: "absolute",
                                 top: "calc(100% + 8px)",
                                 right: 0,
-                                width: "240px",
+                                width: "236px",
                                 background: "var(--card)",
                                 border: "1px solid var(--border-2)",
                                 borderRadius: "14px",
                                 boxShadow: "var(--shadow-lg)",
                                 overflow: "hidden",
                                 zIndex: 9999,
+                                padding: "4px 0",
                             }}
                         >
+                            {/* Switch theme */}
                             <button
                                 onClick={() => { toggleTheme(); setMenuOpen(false); }}
                                 style={{
@@ -122,21 +114,24 @@ function Navbar({ darkMode, toggleTheme, clearConversation }) {
                                     display: "flex",
                                     alignItems: "center",
                                     gap: "10px",
-                                    padding: "12px 16px",
+                                    padding: "10px 16px",
                                     background: "none",
                                     border: "none",
                                     color: "var(--text)",
-                                    fontSize: "13px",
+                                    fontSize: "12.5px",
                                     textAlign: "left",
                                     cursor: "pointer",
+                                    fontFamily: "inherit",
+                                    transition: "background 0.15s",
                                 }}
                                 onMouseEnter={e => e.currentTarget.style.background = "var(--card-hover)"}
                                 onMouseLeave={e => e.currentTarget.style.background = "none"}
                             >
-                                {darkMode ? <Sun size={15} /> : <Moon size={15} />}
+                                {darkMode ? <Sun size={14} /> : <Moon size={14} />}
                                 Switch Theme
                             </button>
 
+                            {/* Clear conversation */}
                             <button
                                 onClick={() => { clearConversation(); setMenuOpen(false); }}
                                 style={{
@@ -144,32 +139,42 @@ function Navbar({ darkMode, toggleTheme, clearConversation }) {
                                     display: "flex",
                                     alignItems: "center",
                                     gap: "10px",
-                                    padding: "12px 16px",
+                                    padding: "10px 16px",
                                     background: "none",
                                     border: "none",
                                     color: "var(--danger)",
-                                    fontSize: "13px",
+                                    fontSize: "12.5px",
                                     textAlign: "left",
                                     cursor: "pointer",
+                                    fontFamily: "inherit",
+                                    transition: "background 0.15s",
                                 }}
                                 onMouseEnter={e => e.currentTarget.style.background = "var(--danger-dim)"}
                                 onMouseLeave={e => e.currentTarget.style.background = "none"}
                             >
-                                <Trash2 size={15} />
+                                <Trash2 size={14} />
                                 Clear Conversation
                             </button>
 
                             <div style={{ height: "1px", background: "var(--border)", margin: "4px 0" }} />
 
-                            <div style={{ padding: "12px 16px" }}>
-                                <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "6px" }}>
-                                    <Info size={14} style={{ color: "var(--primary)" }} />
-                                    <span style={{ fontSize: "12px", fontWeight: 600, color: "var(--text-2)" }}>
+                            {/* About */}
+                            <div style={{ padding: "10px 16px" }}>
+                                <div
+                                    style={{
+                                        display: "flex",
+                                        alignItems: "center",
+                                        gap: "7px",
+                                        marginBottom: "6px",
+                                    }}
+                                >
+                                    <Info size={12} style={{ color: "var(--primary)" }} />
+                                    <span style={{ fontSize: "11px", fontWeight: 700, color: "var(--text-2)", textTransform: "uppercase", letterSpacing: "0.06em" }}>
                                         About
                                     </span>
                                 </div>
-                                <p style={{ fontSize: "11.5px", color: "var(--secondary)", lineHeight: 1.6 }}>
-                                    Memory AI combines Hybrid RAG, Long-Term Memory, Knowledge Graph, and LangGraph for context-aware AI.
+                                <p style={{ fontSize: "11.5px", color: "var(--secondary)", lineHeight: 1.65 }}>
+                                    MemoryGraph combines Hybrid RAG, Long-Term Memory, Knowledge Graph &amp; LangGraph for context-aware AI responses.
                                 </p>
                             </div>
                         </div>

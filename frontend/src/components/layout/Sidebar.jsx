@@ -5,7 +5,6 @@ import {
     Activity,
     Settings,
     Trash2,
-    BrainCircuit,
     ChevronRight,
 } from "lucide-react";
 
@@ -27,33 +26,35 @@ function Sidebar({ onClearConversation }) {
                 borderRight: "1px solid var(--border)",
             }}
         >
-            {/* Logo */}
+            {/* Wordmark — no icon */}
             <div
-                className="flex items-center gap-3 px-5 py-5"
-                style={{ borderBottom: "1px solid var(--border)" }}
+                style={{
+                    padding: "18px 20px",
+                    borderBottom: "1px solid var(--border)",
+                }}
             >
-                <div
-                    className="icon-box-lg"
+                <p
                     style={{
+                        fontSize: "17px",
+                        fontWeight: 800,
+                        letterSpacing: "-0.5px",
                         background: "linear-gradient(135deg, #00d4a0, #0090ff)",
-                        boxShadow: "0 4px 14px rgba(0,212,160,0.3)",
+                        WebkitBackgroundClip: "text",
+                        WebkitTextFillColor: "transparent",
+                        backgroundClip: "text",
+                        lineHeight: 1.2,
                     }}
                 >
-                    <BrainCircuit size={22} color="#fff" />
-                </div>
-                <div>
-                    <p className="font-bold" style={{ fontSize: "15px", lineHeight: 1.2 }}>
-                        Memory AI
-                    </p>
-                    <p style={{ fontSize: "11px", color: "var(--secondary)", marginTop: "2px" }}>
-                        v2.0 · Online
-                    </p>
-                </div>
+                    MemoryGraph
+                </p>
+                <p style={{ fontSize: "10.5px", color: "var(--secondary)", marginTop: "3px" }}>
+                    v2.0 · Online
+                </p>
             </div>
 
             {/* Navigation */}
-            <nav className="flex-1 px-3 py-4 space-y-1 overflow-y-auto">
-                <p className="label px-2 mb-3">Main Menu</p>
+            <nav style={{ flex: 1, padding: "12px", display: "flex", flexDirection: "column", gap: "2px", overflowY: "auto" }}>
+                <p className="label" style={{ padding: "0 8px", marginBottom: "8px" }}>Main Menu</p>
                 {NAV.map(({ path, label, sub, icon: Icon, color }) => (
                     <NavLink
                         key={path}
@@ -72,16 +73,28 @@ function Sidebar({ onClearConversation }) {
                         >
                             <Icon size={16} style={{ color }} />
                         </div>
-                        <div className="flex-1 min-w-0">
+                        <div style={{ flex: 1, minWidth: 0 }}>
                             <p
-                                className="font-semibold truncate"
-                                style={{ fontSize: "13px", lineHeight: 1.3 }}
+                                style={{
+                                    fontSize: "13px",
+                                    fontWeight: 600,
+                                    lineHeight: 1.3,
+                                    overflow: "hidden",
+                                    textOverflow: "ellipsis",
+                                    whiteSpace: "nowrap",
+                                }}
                             >
                                 {label}
                             </p>
                             <p
-                                className="truncate"
-                                style={{ fontSize: "11px", color: "var(--secondary)", marginTop: "1px" }}
+                                style={{
+                                    fontSize: "11px",
+                                    color: "var(--secondary)",
+                                    marginTop: "1px",
+                                    overflow: "hidden",
+                                    textOverflow: "ellipsis",
+                                    whiteSpace: "nowrap",
+                                }}
                             >
                                 {sub}
                             </p>
@@ -92,34 +105,62 @@ function Sidebar({ onClearConversation }) {
             </nav>
 
             {/* Footer */}
-            <div className="px-3 pb-4" style={{ borderTop: "1px solid var(--border)", paddingTop: "14px" }}>
-                {/* System status pill */}
+            <div
+                style={{
+                    padding: "12px",
+                    borderTop: "1px solid var(--border)",
+                }}
+            >
+                {/* System status */}
                 <div
-                    className="flex items-center gap-2 px-3 py-2.5 rounded-xl mb-3"
-                    style={{ background: "rgba(0,212,160,0.06)", border: "1px solid rgba(0,212,160,0.15)" }}
+                    style={{
+                        display: "flex",
+                        alignItems: "center",
+                        gap: "8px",
+                        padding: "8px 12px",
+                        borderRadius: "10px",
+                        marginBottom: "8px",
+                        background: "rgba(0,212,160,0.05)",
+                        border: "1px solid rgba(0,212,160,0.12)",
+                    }}
                 >
                     <span
-                        className="w-2 h-2 rounded-full flex-shrink-0"
-                        style={{ background: "#22c55e", boxShadow: "0 0 6px #22c55e" }}
+                        style={{
+                            width: "6px",
+                            height: "6px",
+                            borderRadius: "50%",
+                            background: "#22c55e",
+                            boxShadow: "0 0 6px #22c55e",
+                            flexShrink: 0,
+                        }}
                     />
-                    <span style={{ fontSize: "12px", color: "var(--primary)", fontWeight: 600 }}>
+                    <span style={{ fontSize: "11.5px", color: "var(--primary)", fontWeight: 600 }}>
                         System Operational
                     </span>
                 </div>
 
                 <button
                     onClick={onClearConversation}
-                    className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl font-semibold transition"
                     style={{
+                        width: "100%",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        gap: "7px",
+                        padding: "9px 0",
+                        borderRadius: "10px",
                         background: "var(--danger-dim)",
-                        border: "1px solid rgba(255,77,77,0.2)",
+                        border: "1px solid rgba(255,77,77,0.18)",
                         color: "var(--danger)",
-                        fontSize: "13px",
+                        fontSize: "12.5px",
+                        fontWeight: 600,
+                        cursor: "pointer",
+                        transition: "all 0.2s",
                     }}
                     onMouseEnter={e => e.currentTarget.style.background = "rgba(255,77,77,0.18)"}
                     onMouseLeave={e => e.currentTarget.style.background = "var(--danger-dim)"}
                 >
-                    <Trash2 size={14} />
+                    <Trash2 size={13} />
                     Clear Chat
                 </button>
             </div>
