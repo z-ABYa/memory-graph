@@ -41,22 +41,7 @@ function ChatWindow({ messages, loading, onSuggestionClick }) {
                         padding: "40px 20px",
                     }}
                 >
-                    {/* Brand icon */}
                     <div style={{ position: "relative" }}>
-                        <div
-                            style={{
-                                width: "68px",
-                                height: "68px",
-                                borderRadius: "20px",
-                                background: "linear-gradient(135deg, #00d4a0, #0090ff)",
-                                display: "flex",
-                                alignItems: "center",
-                                justifyContent: "center",
-                                boxShadow: "0 12px 32px rgba(0,212,160,0.3)",
-                            }}
-                        >
-                            <BrainCircuit size={34} color="#fff" />
-                        </div>
                         <div
                             style={{
                                 position: "absolute",
@@ -79,7 +64,7 @@ function ChatWindow({ messages, loading, onSuggestionClick }) {
                             }}
                         >
                             Welcome to{" "}
-                            <span className="gradient-text">Memory AI</span>
+                            <span className="gradient-text">MemoryGraph</span>
                         </h1>
                         <p
                             style={{

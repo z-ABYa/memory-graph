@@ -54,7 +54,7 @@ function LoadingSpinner({
 
                 <h2 className="text-xl font-semibold">
 
-                    Memory AI
+                    Memory Graph
 
                 </h2>
 
