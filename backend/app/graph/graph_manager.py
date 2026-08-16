@@ -27,34 +27,35 @@ class GraphManager:
 
     ):
 
-        entities = self.entity.extract(text)
-
         relations = self.relation.extract(
 
             user_id,
 
-            entities,
+            text,
 
         )
 
         for relation in relations:
 
+            # Add source entity using extracted type or fallback to CONCEPT
             self.store.add_entity(
 
                 relation["source"],
 
-                "USER",
+                relation.get("source_type", "CONCEPT"),
 
             )
 
+            # Add target entity using extracted type or fallback to CONCEPT
             self.store.add_entity(
 
                 relation["target"],
 
-                relation["type"],
+                relation.get("target_type", "CONCEPT"),
 
             )
 
+            # Add directed semantic relation
             self.store.add_relation(
 
                 relation["source"],
