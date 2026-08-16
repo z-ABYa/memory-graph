@@ -131,7 +131,7 @@ function Settings() {
             <div>
                 <h1 className="text-4xl font-bold">Settings</h1>
                 <p className="mt-2" style={{ color: "var(--secondary)" }}>
-                    Configure the Memory AI system components.
+                    Configure the MemoryGraph system components.
                 </p>
             </div>
 

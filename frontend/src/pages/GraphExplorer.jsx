@@ -19,7 +19,8 @@ function GraphExplorer() {
         draggedNode: null,
         width: 800,
         height: 600,
-        mouse: { x: 0, y: 0 }
+        mouse: { x: 0, y: 0 },
+        alpha: 1.0 // Add cooling factor (alpha) to stabilize graph
     });
 
     // Fetch graph data from backend
@@ -29,6 +30,9 @@ function GraphExplorer() {
         try {
             const { data } = await API.get("/graph/");
             setGraphData(data);
+            
+            // Reset alpha so the graph relaxes from a fresh state
+            simRef.current.alpha = 1.0;
             
             // Initialize simulation objects
             const nodes = data.nodes.map((n, i) => {
@@ -106,11 +110,15 @@ function GraphExplorer() {
         window.addEventListener("resize", resizeCanvas);
 
         const simulate = () => {
-            const { nodes, edges, width, height, draggedNode } = simRef.current;
-            const kRepel = 220; // Repulsion force constant
-            const kAttract = 0.04; // Attraction force constant
-            const centerStrength = 0.03;
-            const damping = 0.85;
+            const { nodes, edges, width, height, draggedNode, alpha } = simRef.current;
+            
+            // If the simulation has cooled down completely, skip physics updates to save resources
+            if (alpha < 0.005) return;
+
+            const kRepel = 240; // Repulsion force constant
+            const kAttract = 0.05; // Attraction force constant
+            const centerStrength = 0.04;
+            const damping = 0.8;
 
             // 1. Repulsion force between all node pairs
             for (let i = 0; i < nodes.length; i++) {
@@ -119,19 +127,21 @@ function GraphExplorer() {
                     const n2 = nodes[j];
                     const dx = n2.x - n1.x;
                     const dy = n2.y - n1.y;
-                    const distSq = dx * dx + dy * dy || 1;
+                    
+                    // Add a softening parameter (+ 400) to prevent divide-by-zero or force explosion
+                    const distSq = dx * dx + dy * dy + 400;
                     const dist = Math.sqrt(distSq);
 
                     // Pushes apart
-                    if (dist < 300) {
+                    if (dist < 280) {
                         const force = (kRepel * 100) / distSq;
                         const fx = (dx / dist) * force;
                         const fy = (dy / dist) * force;
 
-                        n1.vx -= fx;
-                        n1.vy -= fy;
-                        n2.vx += fx;
-                        n2.vy += fy;
+                        n1.vx -= fx * alpha;
+                        n1.vy -= fy * alpha;
+                        n2.vx += fx * alpha;
+                        n2.vy += fy * alpha;
                     }
                 }
             }
@@ -144,24 +154,24 @@ function GraphExplorer() {
                 const dy = n2.y - n1.y;
                 const dist = Math.sqrt(dx * dx + dy * dy) || 1;
                 
-                // Pulls together (rest length is ~140)
-                const restLength = 140;
+                // Pulls together (rest length is ~130)
+                const restLength = 130;
                 const force = (dist - restLength) * kAttract;
                 const fx = (dx / dist) * force;
                 const fy = (dy / dist) * force;
 
-                n1.vx += fx;
-                n1.vy += fy;
-                n2.vx -= fx;
-                n2.vy -= fy;
+                n1.vx += fx * alpha;
+                n1.vy += fy * alpha;
+                n2.vx -= fx * alpha;
+                n2.vy -= fy * alpha;
             }
 
             // 3. Center gravity force
             const cx = width / 2;
             const cy = height / 2;
             for (const node of nodes) {
-                node.vx += (cx - node.x) * centerStrength;
-                node.vy += (cy - node.y) * centerStrength;
+                node.vx += (cx - node.x) * centerStrength * alpha;
+                node.vy += (cy - node.y) * centerStrength * alpha;
             }
 
             // 4. Update coordinates & apply damping
@@ -183,6 +193,9 @@ function GraphExplorer() {
                     node.y = Math.max(30, Math.min(height - 30, node.y));
                 }
             }
+
+            // Decay alpha (cooling down)
+            simRef.current.alpha *= 0.985;
         };
 
         const render = () => {
@@ -311,6 +324,9 @@ function GraphExplorer() {
         const mx = e.clientX - rect.left;
         const my = e.clientY - rect.top;
 
+        // Wake up simulation when interacting
+        simRef.current.alpha = 1.0;
+
         // Check if a node was clicked
         const clickedNode = simRef.current.nodes.find(node => {
             const dx = node.x - mx;
@@ -334,6 +350,11 @@ function GraphExplorer() {
 
         simRef.current.mouse.x = mx;
         simRef.current.mouse.y = my;
+
+        if (simRef.current.draggedNode) {
+            // Keep simulation hot while dragging
+            simRef.current.alpha = 1.0;
+        }
 
         // Check if hovering a node
         const node = simRef.current.nodes.find(node => {
