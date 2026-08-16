@@ -19,7 +19,7 @@ Unlike traditional chatbots, this system remembers previous interactions and com
                     User
                       │
                       ▼
-             React Frontend
+                React Frontend
                       │
                 REST API Calls
                       │
@@ -30,19 +30,19 @@ Unlike traditional chatbots, this system remembers previous interactions and com
         │             │             │
         ▼             ▼             ▼
 
-Retriever Memory Manager Web Search
-│ │ │
-▼ ▼ ▼
-ChromaDB Memory Store Scraper
-│
-▼
-Prompt Builder
-│
-▼
-Gemini API
-│
-▼
-Final Response
+    Retriever   Memory Manager   Web Search
+        │              │            │
+        ▼              ▼            ▼
+    ChromaDB     Memory Store    Scraper
+        │
+        ▼
+    Prompt Builder
+        │
+        ▼
+    Gemini API
+        │
+        ▼
+    Final Response
 
 ---
 
@@ -118,17 +118,13 @@ Responsible for document retrieval.
 Workflow:
 
 Documents
-↓
-
+    ↓
 Chunking
-↓
-
+    ↓
 Embedding
-↓
-
+    ↓
 Vector Search
-↓
-
+    ↓
 Relevant Context
 
 Technologies:
@@ -199,38 +195,20 @@ Receives the final prompt and generates the answer.
 # Data Flow
 
 User Question
-
-↓
-
-API
-
-↓
-
+    ↓
+   API
+    ↓
 Retrieve Documents
-
-↓
-
+    ↓
 Retrieve Memory
-
-↓
-
+    ↓
 Retrieve Knowledge Graph
-
-↓
-
-(Optional Web Search)
-
-↓
-
+    ↓
 Prompt Builder
-
-↓
-
-Gemini
-
-↓
-
-Response
+    ↓
+ Gemini
+    ↓
+ Response
 
 ---
 

@@ -2,54 +2,28 @@
 
 ## Complete Workflow
 
-User
-
-↓
-
+   User
+    ↓
 React Frontend
-
-↓
-
+    ↓
 FastAPI Endpoint
-
-↓
-
+    ↓
 Request Validation
-
-↓
-
+    ↓
 Retrieve Relevant Documents
-
-↓
-
+    ↓
 Retrieve Long-Term Memory
-
-↓
-
+    ↓
 Retrieve Knowledge Graph Context
-
-↓
-
-(Optional) Web Search
-
-↓
-
+    ↓
 Build Prompt
-
-↓
-
+    ↓
 Gemini API
-
-↓
-
+    ↓
 Response
-
-↓
-
+    ↓
 Store Important Memory
-
-↓
-
+    ↓
 Return Final Response
 
 ---

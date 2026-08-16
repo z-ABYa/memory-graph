@@ -1,7 +1,6 @@
 # API Documentation
 
 Base URL
-
 http://localhost:8000
 
 ---
@@ -10,9 +9,7 @@ http://localhost:8000
 
 GET /health
 
-Description
-
-Checks whether the backend server is running.
+Description - Checks whether the backend server is running.
 
 Response
 
@@ -26,9 +23,7 @@ Response
 
 POST /chat
 
-Description
-
-Main chatbot endpoint.
+Description - Main chatbot endpoint.
 
 Request
 
@@ -48,9 +43,7 @@ Response
 
 POST /upload
 
-Description
-
-Uploads PDF files into the vector database.
+Description - Uploads PDF files into the vector database.
 
 Request
 
@@ -69,7 +62,6 @@ Response
 # Scrape Website
 
 POST /scrape
-
 Request
 
 {
@@ -87,7 +79,6 @@ Response
 # Memory
 
 GET /memory
-
 Returns stored memories.
 
 Response
@@ -101,7 +92,6 @@ Response
 ---
 
 POST /memory
-
 Stores memory.
 
 Request
@@ -121,7 +111,6 @@ Response
 # Knowledge Graph
 
 GET /graph
-
 Returns graph nodes and relationships.
 
 Response
@@ -136,7 +125,6 @@ Response
 # Evaluation
 
 POST /evaluate
-
 Evaluates chatbot performance.
 
 Request
@@ -157,19 +145,15 @@ Response
 # Response Codes
 
 200
-
 Success
 
 400
-
 Bad Request
 
 404
-
 Resource Not Found
 
 500
-
 Internal Server Error
 
 ---
@@ -185,23 +169,13 @@ Internal Server Error
 # API Flow
 
 Client
-
 ↓
-
 FastAPI
-
 ↓
-
 Business Logic
-
 ↓
-
 Database / Vector DB
-
 ↓
-
 Gemini
-
 ↓
-
 Response
