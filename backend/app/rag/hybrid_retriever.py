@@ -79,7 +79,8 @@ class HybridRetriever:
             logger.info("Running Graph Retrieval...")
 
             graph_context = self.graph.retrieve(
-                user_id
+                user_id,
+                question,
             )
 
             logger.info("Graph Retrieval Completed.")
