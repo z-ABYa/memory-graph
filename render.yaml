@@ -1,0 +1,26 @@
+services:
+  - type: web
+    name: memory-graph-backend
+    runtime: python
+    rootDir: backend
+    buildCommand: pip install -r ../requirements.txt
+    startCommand: uvicorn app.main:app --host 0.0.0.0 --port $PORT
+    envVars:
+      # --- Set these manually in the Render dashboard ---
+      - key: GEMINI_API_KEY
+        sync: false
+      - key: MODEL_NAME
+        sync: false
+      - key: MONGODB_URI
+        sync: false
+      - key: FRONTEND_URL
+        sync: false        # Set this after your Vercel deploy is complete
+      # --- Safe defaults (can be overridden in dashboard) ---
+      - key: CHROMA_DB_PATH
+        value: app/vector_db
+      - key: DATA_PATH
+        value: app/data
+      - key: CHUNK_SIZE
+        value: "800"
+      - key: CHUNK_OVERLAP
+        value: "150"
