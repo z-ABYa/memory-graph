@@ -1,28 +1,50 @@
 """
 embeddings.py
 
-Generates embeddings for document chunks.
+Generates embeddings for document chunks using the Gemini Embedding API.
+
+Replaced local sentence-transformers (torch + ~400MB model weights) with
+the Gemini text-embedding-004 API to stay within Render's 512MB free tier.
 """
 
-from sentence_transformers import SentenceTransformer
+from google import genai
+from google.genai import types
 
-from app.config.settings import EMBEDDING_MODEL
+from app.config.settings import GEMINI_API_KEY
 from app.utils.logger import logger
+
+# Gemini embedding model — no local weights downloaded
+GEMINI_EMBEDDING_MODEL = "text-embedding-004"
+
+client = genai.Client(api_key=GEMINI_API_KEY)
 
 
 class EmbeddingGenerator:
 
     def __init__(self):
-
-        logger.info("Loading embedding model...")
-
-        self.model = SentenceTransformer(
-            EMBEDDING_MODEL
+        logger.info(
+            f"EmbeddingGenerator ready — using Gemini API model: {GEMINI_EMBEDDING_MODEL}"
         )
 
-        logger.info("Embedding model loaded successfully.")
+    def _embed_text(self, text: str) -> list[float]:
+        """Embed a single string via the Gemini API."""
+        response = client.models.embed_content(
+            model=GEMINI_EMBEDDING_MODEL,
+            contents=text,
+            config=types.EmbedContentConfig(task_type="RETRIEVAL_DOCUMENT"),
+        )
+        return response.embeddings[0].values
 
-    def generate_embeddings(self, chunks):
+    def embed_query(self, query: str) -> list[float]:
+        """Embed a query string for retrieval."""
+        response = client.models.embed_content(
+            model=GEMINI_EMBEDDING_MODEL,
+            contents=query,
+            config=types.EmbedContentConfig(task_type="RETRIEVAL_QUERY"),
+        )
+        return response.embeddings[0].values
+
+    def generate_embeddings(self, chunks) -> list[list[float]]:
         """
         Generate embeddings for all chunks.
 
@@ -32,15 +54,11 @@ class EmbeddingGenerator:
         Returns:
             list[list[float]]
         """
+        embeddings = []
 
-        texts = [
-            chunk.content
-            for chunk in chunks
-        ]
+        for chunk in chunks:
+            embedding = self._embed_text(chunk.content)
+            embeddings.append(embedding)
 
-        embeddings = self.model.encode(
-            texts,
-            convert_to_numpy=True
-        )
-
-        return embeddings.tolist()
+        logger.info(f"Generated {len(embeddings)} embeddings via Gemini API.")
+        return embeddings

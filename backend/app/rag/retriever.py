@@ -32,9 +32,7 @@ class Retriever:
         logger.info("RAG Retrieval Started")
         logger.info(f"Query : {query}")
 
-        query_embedding = self.embedding_generator.model.encode(
-            query
-        ).tolist()
+        query_embedding = self.embedding_generator.embed_query(query)
 
         logger.info(
             f"Collection Count : {self.vector_store.collection.count()}"
