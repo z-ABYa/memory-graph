@@ -50,6 +50,10 @@ class IngestionPipeline:
         """
         Common pipeline used for both
         website and PDF ingestion.
+
+        Embeds chunks and saves to ChromaDB immediately.
+        Returns result right away — graph building happens separately
+        via _build_graph_async so it doesn't block the HTTP response.
         """
 
         chunks = document.chunks
@@ -67,33 +71,39 @@ class IngestionPipeline:
             embeddings,
         )
 
-        logger.info("Building Knowledge Graph...")
-
-        graph_built = self.graph_builder.build_from_chunks(
-            user_id=user_id,
-            chunks=[
-                chunk.content
-                for chunk in chunks
-            ],
-        )
-
-        logger.info("Pipeline completed successfully.")
+        logger.info("Pipeline completed successfully. Graph will build in background.")
 
         return {
             "status": "success",
             "document_id": document.document_id,
             "source": document.source,
             "chunks": len(chunks),
-
-            # ---------- NEW ----------
             "embeddings": len(embeddings),
-            "graph_status": (
-                "Built Successfully"
-                if graph_built
-                else "Skipped"
-            ),
+            "graph_status": "Building in background",
             "vector_store": "Updated",
         }
+
+    def build_graph_for_document(
+        self,
+        document,
+        user_id: str,
+    ):
+        """
+        Builds the knowledge graph for a document.
+        Intended to be called as a FastAPI BackgroundTask
+        so it does not block the HTTP response.
+        """
+
+        logger.info("Background: Building Knowledge Graph...")
+
+        try:
+            self.graph_builder.build_from_chunks(
+                user_id=user_id,
+                chunks=[chunk.content for chunk in document.chunks],
+            )
+            logger.info("Background: Knowledge Graph built successfully.")
+        except Exception as e:
+            logger.error(f"Background: Graph build failed: {e}")
 
     def ingest_url(
         self,
@@ -104,11 +114,10 @@ class IngestionPipeline:
         logger.info("Starting Website Ingestion...")
 
         document = load_document(url)
+        result = self._process_document(document, user_id)
 
-        return self._process_document(
-            document,
-            user_id,
-        )
+        # Return both so the API can schedule graph building as a BackgroundTask
+        return result, document
 
     def ingest_pdf(
         self,
@@ -119,8 +128,7 @@ class IngestionPipeline:
         logger.info("Starting PDF Ingestion...")
 
         document = load_pdf_document(pdf_path)
+        result = self._process_document(document, user_id)
 
-        return self._process_document(
-            document,
-            user_id,
-        )
+        # Return both so the API can schedule graph building as a BackgroundTask
+        return result, document

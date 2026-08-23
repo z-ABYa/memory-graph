@@ -1,7 +1,6 @@
-from fastapi import APIRouter, UploadFile, File, HTTPException, Form
+from fastapi import APIRouter, UploadFile, File, HTTPException, Form, BackgroundTasks
 import os
-import shutil
-import uuid
+import tempfile
 
 from app.rag.ingestion_pipeline import IngestionPipeline
 
@@ -9,15 +8,12 @@ router = APIRouter()
 
 pipeline = IngestionPipeline()
 
-UPLOAD_DIR = "uploads"
-
-os.makedirs(UPLOAD_DIR, exist_ok=True)
-
 
 @router.post("/")
 async def upload_pdf(
     file: UploadFile = File(...),
     user_id: str = Form("default_user"),
+    background_tasks: BackgroundTasks = BackgroundTasks(),
 ):
 
     try:
@@ -29,29 +25,40 @@ async def upload_pdf(
                 detail="Only PDF files are allowed."
             )
 
-        filename = f"{uuid.uuid4()}.pdf"
+        # Write to /tmp — always writable on Render and any Linux host
+        with tempfile.NamedTemporaryFile(
+            suffix=".pdf",
+            delete=False,
+            dir="/tmp",
+        ) as tmp:
+            content = await file.read()
+            tmp.write(content)
+            file_path = tmp.name
 
-        file_path = os.path.join(
-            UPLOAD_DIR,
-            filename,
-        )
-
-        with open(file_path, "wb") as buffer:
-            shutil.copyfileobj(
-                file.file,
-                buffer,
+        try:
+            result, document = pipeline.ingest_pdf(
+                pdf_path=file_path,
+                user_id=user_id,
             )
+        finally:
+            # Clean up temp file after processing
+            os.unlink(file_path)
 
-        result = pipeline.ingest_pdf(
-            pdf_path=file_path,
-            user_id=user_id,
+        # Build knowledge graph in the background — doesn't block response
+        background_tasks.add_task(
+            pipeline.build_graph_for_document,
+            document,
+            user_id,
         )
 
         return {
             "success": True,
-            "message": "PDF uploaded and processed successfully.",
+            "message": "PDF uploaded and embedded. Graph building in background.",
             "data": result,
         }
+
+    except HTTPException:
+        raise
 
     except Exception as e:
 
