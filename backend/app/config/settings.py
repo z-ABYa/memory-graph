@@ -34,7 +34,7 @@ CHROMA_DB_PATH = os.getenv(
 
 COLLECTION_NAME = os.getenv(
     "COLLECTION_NAME",
-    "knowledge_base"
+    "knowledge_base_v2"
 )
 
 # ==========================

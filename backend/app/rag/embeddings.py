@@ -7,14 +7,16 @@ Replaced local sentence-transformers (torch + ~400MB model weights) with
 the Gemini text-embedding-004 API to stay within Render's 512MB free tier.
 """
 
+import os
+
 from google import genai
 from google.genai import types
 
 from app.config.settings import GEMINI_API_KEY
 from app.utils.logger import logger
 
-# Gemini embedding model — no local weights downloaded
-GEMINI_EMBEDDING_MODEL = "text-embedding-004"
+# Gemini embedding model — supported by Gemini v1beta API
+GEMINI_EMBEDDING_MODEL = os.getenv("EMBEDDING_MODEL", "gemini-embedding-001")
 
 client = genai.Client(api_key=GEMINI_API_KEY)
 

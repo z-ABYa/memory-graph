@@ -38,10 +38,18 @@ class Retriever:
             f"Collection Count : {self.vector_store.collection.count()}"
         )
 
-        results = self.vector_store.collection.query(
-            query_embeddings=[query_embedding],
-            n_results=top_k,
-        )
+        try:
+            results = self.vector_store.collection.query(
+                query_embeddings=[query_embedding],
+                n_results=top_k,
+            )
+        except Exception as e:
+            if "dimension" in str(e).lower():
+                logger.warning("Dimension mismatch during query, resetting collection...")
+                self.vector_store.reset_collection()
+                results = {"documents": [[]], "metadatas": [[]]}
+            else:
+                raise e
 
         logger.info("Raw Chroma Result:")
         logger.info(results)
